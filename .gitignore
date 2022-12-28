@@ -1,0 +1,8 @@
+htmlcov
+.coverage
+.dbdata
+*/__pycache__/
+env
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py

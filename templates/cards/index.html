@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form class="d-flex align-items-start" hx-swap="none" hx-post="{% url 'cards:moved-object' %}" hx-trigger="cardmoved">
+
+    <input type="hidden" name="fromCard" id="fromCard">
+    <input type="hidden" name="toCard" id="toCard">
+    <input type="hidden" name="order" id="order">
+    <input type="hidden" name="movedItem" id="movedItem">
+
+    <div class="board d-flex align-items-start h-100" _="on end put event.from.id into #fromCard.value
+                                 put event.to.id into #toCard.value 
+                                 put event.newIndex into #order.value
+                                 put event.item.id into #movedItem.value 
+                                 then send cardmoved">
+        {% for card in cards %}
+        <div hx-trigger="load" hx-get="{% url 'cards:card' card.uuid %}" hx-swap="outerHTML"></div>
+        {% endfor %}
+    </div>
+    <div class="card m-3 p-2 pb-0 ">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Card name" name="newcard" >
+
+            
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" _='on htmx:afterRequest 
+                                                                put "" into me.parentElement.previousElementSibling.value'
+            type="button" hx-target=".board" hx-swap="beforeend" hx-post="{% url 'cards:add-card' %}">Add new card</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="modal-here"></div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    htmx.onLoad(function (content) {
+        new Sortable(document.querySelectorAll(".board")[0], {
+            draggable: ".list-all",
+            handle: ".card-handler",
+            animation: 150
+        })
+        var sortables = document.querySelectorAll(".list-items");
+        for (var i = 0; i < sortables.length; i++) {
+            var sortable = sortables[i];
+            new Sortable(sortable, {
+                draggable: ".item",
+                animation: 150,
+                group: 'group',
+            });
+        }
+    })
+</script>
+{% endblock %}
