@@ -17,7 +17,9 @@ class UserRegistrationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(UserRegistrationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
-        self.helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
+
+        # restrict user of submiting form if it's not valid
+        self.helper.add_input(Submit('submit', 'Submit', css_class='btn-primary', disabled=not self.is_valid() , hx_swap_oob='true'))
         self.helper.form_id = 'registration-form'
 
         # we need this to preserve the password values in the form when a validation request is made
@@ -32,7 +34,10 @@ class UserRegistrationForm(UserCreationForm):
                                     'hx-swap': 'outerHTML',
                                     'hx-sync': 'closest form:abort',
                                     'autofocus': False,
-                                    'hx-select': f'#div_id_{k}'})
+                                    'hx-select': f'#div_id_{k}',
+                                    'hx-preserve': True})
 
+        # the confirm password field is always re-rendered for a better user experience
         self.fields['password1'].widget.attrs.update({'hx-select-oob': '#div_id_password2'})
+        self.fields['username'].widget.attrs.update({'hx-select-oob': '#div_id_password2'})
 
