@@ -38,3 +38,5 @@ To run the app, simply execute
 ```
 docker-compose up
 ```
+
+Then access the ui on localhost:8000
