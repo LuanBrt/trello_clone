@@ -12,9 +12,10 @@
     </div>
 
     <div class="edit-item hidden" id="add-item-{{ card.uuid }}">
-        <input type="text" class="form-control" placeholder="Item name" name="newitem-{{ card.uuid }}" _="on htmx:afterRequest reset() me">
+        <input type="text" class="form-control" placeholder="Item name" name="newitem-{{ card.uuid }}" _="on htmx:afterRequest reset() me 
+        on keydown if event.code is 'Enter' then event.preventDefault() then send click to #addNewItemBtn{{ card.uuid }}">
         <div class="p-1">
-            <button class="btn btn-primary" type="button" _='on htmx:afterRequest 
+            <button class="btn btn-primary" id="addNewItemBtn{{ card.uuid }}" type="button" _='on htmx:afterRequest 
                                                                 put "" into me.parentElement.previousElementSibling.value' 
                                                                 hx-target="#parent-card-{{ card.uuid }}"
                                                                 hx-select=".item:last-child" 

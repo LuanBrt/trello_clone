@@ -1,7 +1,9 @@
+{% load cards_extras %}
+
 <div class="pr-1">
 {% for tag in item.tags.all %}
     <div class="badge mt-1" style="background-color: {{ tag.color }};">
-        <p class="m-1" _="on load set my style.color to calculateContrastColor('{{ tag.color }}')" style="color: #FFFFFF;">{{ tag.name }}</p>
+        <p class="m-1"  style="color: {{ tag.color|get_contrast_color }};">{{ tag.name }}</p>
     </div>
 {% endfor %}
 </div>

@@ -44,11 +44,12 @@
     </div>
     <div class="card m-3 p-2 pb-0 ">
         <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Card name" name="newcard">
+            <input type="text" class="form-control" placeholder="Card name" name="newcard" _="on keydown if event.code is 'Enter' then event.preventDefault() then send click to #addNewCardBtn">
 
 
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary"
+                id='addNewCardBtn'
                     _='on htmx:afterRequest 
                                                                 put "" into me.parentElement.previousElementSibling.value' type="button" hx-target=".board"
                     hx-swap="beforeend" hx-post="{% url 'cards:add-card' %}">Add new card</button>
@@ -93,20 +94,6 @@
             container.removeChild(backdrop)
             container.removeChild(modal)
         }, 200)
-    }
-    function calculateContrastColor(color) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
-
-        red = parseInt(result[1], 16)
-        green = parseInt(result[2], 16)
-        blue = parseInt(result[3], 16)
-
-
-        if ((red * 0.299 + green * 0.587 + blue * 0.114) > 150) {
-            return "#000000"
-        } else {
-            return "#FFFFFF"
-        }
     }
 
 </script>
