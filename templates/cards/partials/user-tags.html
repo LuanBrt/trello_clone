@@ -1,0 +1,18 @@
+{% for tag in tags %}
+<div class="tag-container" id="tag-{{ tag.uuid }}">
+    <div class="dropdown-item d-inline-flex py-0 justify-content-between"
+        _="on click get first <input/> in me then set its checked to not it.checked">
+        <div class="d-inline-flex justify-content-between align-items-center">
+            <input _="on click return false" type="checkbox" class="form-check-input" name="tag-filter-item"
+                value="{{ tag.uuid }}">
+            <div class="rounded-circle" style="background-color: {{ tag.color }}; width: 30px; height: 30px;"></div>
+            <p class="mb-0 pb-0 px-2">{{ tag.name }}</p>
+        </div>
+        <button class="btn btn-ouline-secondary pl-3 pr-0 border-left rounded-0"
+            hx-delete="{% url 'cards:delete-tag' tag.uuid %}" hx-target="#tag-{{ tag.uuid }}" hx-swap="delete"
+            hx-confirm="Do you want to delete this Tag?"><span class="material-icons-outlined">
+                delete
+            </span></button>
+    </div>
+</div>
+{% endfor %}

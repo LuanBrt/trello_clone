@@ -1,3 +1,16 @@
-<div hx-get="#" hx-trigger="click" hx-target="#modal-here" id="item-{{ item.uuid }}" class="item card-body rounded bg-white shadow-2 mb-2" >
+{% for item in items%}
+
+<div hx-get="{% url 'cards:item-details' item.uuid %}" hx-swap="innerHTML" hx-trigger="click" hx-target="#modal-here"
+    class="item card-body rounded bg-white shadow-2 mb-2 p-3 pt-2" id="item-{{ item.uuid }}"
+    _="on htmx:afterOnLoad if event.target is me then add .show to #modal then add .show to #modal-backdrop">
+    <div>
+        <!--The item-tags file is loaded both via htmx and by the django template engine, 
+            we do that so that any adding of removing of tags don't update the ui in an ugly way-->
+        <div class="d-inline-flex " id="item-{{ item.uuid }}-tags" hx-target="#item-{{ item.uuid }}-tags"
+            hx-swap="innerHTML swap:20ms" hx-get="{% url 'cards:item-tags' item.uuid %}" hx-trigger="load">
+            {% include "cards/partials/item-tags.html" with item=item %}
+        </div>
+    </div>
     {{ item.title}}
 </div>
+{% endfor %}

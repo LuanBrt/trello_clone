@@ -1,14 +1,17 @@
+
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from cards.forms import ItemDescriptionForm, TagForm
 
-from cards.models import Card, Item
+from cards.models import Card, Item, Tag
 
 # Create your views here.
 @login_required
 def index_view(request):
     cards = Card.objects.filter(user=request.user).order_by('order')
-    return render(request, 'cards/index.html', {'cards': cards})
+    tags_form = TagForm()
+    return render(request, 'cards/index.html', {'cards': cards, 'tags_form': tags_form})
 
 @login_required
 def card_view(request, uuid):
@@ -16,9 +19,79 @@ def card_view(request, uuid):
     return render(request, 'cards/partials/card.html', {'card': card})
 
 @login_required
-def item_view(request, uuid):
+def user_tags_view(request):
+    tags = Tag.objects.filter(user=request.user)
+    return render(request, 'cards/partials/user-tags.html', {'tags': tags})
+
+@login_required
+def add_tag_view(request):
+    form = TagForm(request.POST)
+    if form.is_valid():
+        tag = form.save(commit=False)
+        tag.user = request.user
+        tag.save()
+    response = HttpResponse()
+    response['HX-Trigger-After-Settle'] = 'tag-added'
+    return response
+
+@login_required
+def manage_item_tags_view(request, uuid):
     item = Item.objects.get(uuid=uuid, card__user=request.user)
-    return render(request, 'cards/partials/item.html', {'item': item})
+    selected_tags = request.POST.getlist('tag-update-item')
+    all_tags = request.user.tag.all()
+
+    for tag in all_tags:
+        if str(tag.uuid) in selected_tags and tag not in item.tags.all():
+            item.tags.add(tag)
+
+        elif str(tag.uuid) not in selected_tags and tag in item.tags.all():
+            item.tags.remove(tag)
+
+    response = HttpResponse()
+    response['HX-Trigger-After-Settle'] = f'item-{item.uuid}-tags-update'
+    return response
+
+@login_required
+def delete_tag_view(request, uuid):
+    tag = Tag.objects.get(user=request.user, uuid=uuid)
+    if tag is not None:
+        tag.delete()
+
+    response = HttpResponse()
+    response['HX-Trigger-After-Settle'] = 'tag-deleted'
+    return response
+
+@login_required
+def card_items_view(request, uuid):
+    card = Card.objects.get(uuid=uuid, user=request.user)
+    items = card.get_items()
+    if 'tag-filter-item' in request.GET.keys():
+
+        for tag in request.GET.getlist('tag-filter-item'):
+
+            items = items.filter(tags__uuid__contains=tag)
+    return render(request, 'cards/partials/item.html', {'items': items})
+
+@login_required
+def item_details_view(request, uuid):
+    
+    item = Item.objects.get(uuid=uuid, card__user=request.user)
+    description_form = ItemDescriptionForm(request.POST or None, instance=item)
+
+    if request.POST:
+        if description_form.is_valid():
+            description_form.save()
+        
+        return HttpResponse()
+
+
+    context = {'item': item, 'description_form': description_form}
+    return render(request, 'cards/partials/item-details.html', context)
+
+@login_required
+def item_tags_view(request, uuid):
+    item = Item.objects.get(uuid=uuid, card__user=request.user)
+    return render(request, 'cards/partials/item-tags.html', {'item': item})
 
 @login_required
 def add_item_view(request, card_uuid):
@@ -28,7 +101,8 @@ def add_item_view(request, card_uuid):
         item = Item.objects.create(title=item_title, card=card)
         item.save()
 
-        return render(request, 'cards/partials/item.html', {'item': item})
+        # we re-render the card items template, so that, in the html, we can select the last item and add it to the ui
+        return render(request, 'cards/partials/item.html', {'items': card.get_items()})
     else:
         return HttpResponse()
 
@@ -49,7 +123,7 @@ def delete_card_view(request, uuid):
 
 @login_required
 def delete_item_view(request, uuid):
-    item = Item.objects.get(uuid=uuid, user=request.user)
+    item = Item.objects.get(uuid=uuid, card__user=request.user)
 
     if item is not None:
         item.delete()

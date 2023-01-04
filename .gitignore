@@ -3,6 +3,7 @@ htmlcov
 .dbdata
 */__pycache__/
 env
+.vscode
 **/migrations/**
 !**/migrations
 !**/migrations/__init__.py

@@ -1,0 +1,64 @@
+{% load crispy_forms_tags %}
+
+<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
+<div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body">
+                {% crispy description_form %}
+                <div>
+                    <label>Tags: </label>
+                    <div class="d-inline-flex" id="item-details-{{ item.uuid }}-tags"
+                        hx-target="#item-details-{{ item.uuid }}-tags" hx-swap="innerHTML"
+                        hx-get="{% url 'cards:item-tags' item.uuid %}"
+                        hx-trigger="load, item-{{ item.uuid }}-tags-update from:body">
+                    </div>
+                    <div class="search-select dropdown ">
+                        <button id="dropdownBtn dropdown-toggle" type="button" data-toggle="dropdown"
+                            data-reference="parent" class="btn btn-light rounded-0 pr-5 b-5">
+                            <span>Manage tags</span>
+                        </button>
+                        <div class="dropdown-menu bg-light border-0">
+                            <input _="on input
+                                            show .tag-container in first .search-select-filtered-options in my parentElement
+                                            when it's textContent.toLowerCase() contains my value.toLowerCase()" />
+                            <div class="search-select-filtered-options p-0 " _="on click stopPropagation() on event">
+                                <div>
+                                    {% for tag in request.user.tag.all %}
+                                    <div class="tag-container ">
+                                        <div class="dropdown-item d-inline-flex py-2 justify-content-between"
+                                            _="on click get first <input/> in me then set its checked to not it.checked">
+                                            <div class="d-inline-flex justify-content-between align-items-center">
+                                                <input _="on click return false" type="checkbox"
+                                                    class="form-check-input" name="tag-update-item"
+                                                    value="{{ tag.uuid }}" {% if tag in item.tags.all %}checked{% endif %}>
+                                                <div class="rounded-circle"
+                                                    style="background-color: {{ tag.color }}; width: 30px; height: 30px;">
+                                                </div>
+                                                <p class="mb-0 pb-0 px-2">{{ tag.name }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <button hx-swap="none" class="dropdown-item btn btn-primary pt-2"
+                                    hx-post="{% url 'cards:update-item-tags' item.uuid %}" type="button"
+                                    hx-include="[name='tag-update-item']">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-danger" _="on htmx:afterRequest closeModal()" hx-confirm="Are you sure?" hx-delete="{% url 'cards:delete-item' item.uuid %}" hx-swap="delete" hx-target="#item-{{ item.uuid }}">Delete</button>
+                <button type="button" class="btn btn-secondary" hx-trigger="formresponded"
+                    _="on click send detailsformsubmit 
+                        on htmx:afterRequest from first <form /> in my parentElement.parentElement send formresponded to me 
+                        on htmx:afterOnLoad closeModal()" 
+                    hx-swap="none" hx-get="{% url 'cards:card-items' item.card.uuid %}"
+                    hx-select-oob="#item-{{ item.uuid }}">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
