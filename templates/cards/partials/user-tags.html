@@ -3,7 +3,7 @@
     <div class="dropdown-item d-inline-flex py-0 justify-content-between"
         _="on click get first <input/> in me then set its checked to not it.checked">
         <div class="d-inline-flex justify-content-between align-items-center">
-            <input _="on click return false" type="checkbox" class="form-check-input" name="tag-filter-item"
+            <input _="on click send click to my parentElement.parentElement then return false" type="checkbox" class="form-check-input" name="tag-filter-item"
                 value="{{ tag.uuid }}">
             <div class="rounded-circle" style="background-color: {{ tag.color }}; width: 30px; height: 30px;"></div>
             <p class="mb-0 pb-0 px-2">{{ tag.name }}</p>
