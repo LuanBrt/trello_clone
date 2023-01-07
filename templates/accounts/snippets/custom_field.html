@@ -1,0 +1,18 @@
+{% load crispy_forms_field %}
+
+<div class="mb-3">
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    <div id="div_{{ field.auto_id }}">
+        <div>
+            {% crispy_field field 'class' 'form-control' %}
+        </div>
+        <div id="{{ field.auto_id }}-errors">
+            {% for error in field.errors %}
+                <p id="error_{{ forloop.counter }}_{{ field.auto_id }}" class="invalid-feedback"><strong>{{ error }}</strong></p>
+            {% endfor %}
+        </div>
+        <small class="form-text text-muted mt-0 pb-1">
+            {{ field.help_text|safe }}
+        </small>
+    </div>
+</div>
