@@ -14,7 +14,7 @@ class TagForm(forms.ModelForm):
         self.helper.form_id = 'tag-form'
 
         self.helper.add_layout(Layout('name', 'color', HTML("""<input class="btn btn-primary"
-                                                                hx-post={% url 'cards:add-tag' %}
+                                                                hx-post={% url 'cards:tag-list' %}
                                                                 hx-trigger="click"
                                                                 _="on htmx:afterRequest send click to closest .dropdown-toggle"
                                                                 type="reset"
@@ -33,7 +33,7 @@ class ItemDescriptionForm(forms.ModelForm):
         super(ItemDescriptionForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = f'item{self.instance.uuid}detailsform'
-        self.helper.attrs = {'hx-post': reverse_lazy('cards:item-details', kwargs={'uuid': self.instance.uuid }),
+        self.helper.attrs = {'hx-put': reverse_lazy('cards:item', kwargs={'uuid': self.instance.uuid }),
                              'hx-trigger': 'detailsformsubmit from:body',
                              'hx-swap': 'none'}
         self.helper.form_tag = True

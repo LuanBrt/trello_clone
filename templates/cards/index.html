@@ -12,7 +12,7 @@
                         show .tag-container in first .search-select-filtered-options in my parentElement
                         when it's textContent.toLowerCase() contains my value.toLowerCase()" />
             <div class="search-select-filtered-options p-0 " _="on click stopPropagation() on event">
-                <div hx-trigger="load, tag-added from:body" hx-get="{% url 'cards:user-tags' %}"></div>
+                <div hx-trigger="load, tag-added from:body" hx-get="{% url 'cards:tag-list' %}"></div>
                 <div class="dropdown-divider"></div>
                 <button class="dropdown-item btn btn-primary pt-2" _="on click send filteritems to body">Filter</button>
             </div>
@@ -52,7 +52,7 @@
                 id='addNewCardBtn'
                     _='on htmx:afterRequest 
                                                                 put "" into me.parentElement.previousElementSibling.value' type="button" hx-target=".board"
-                    hx-swap="beforeend" hx-post="{% url 'cards:add-card' %}">Add new card</button>
+                    hx-swap="beforeend" hx-post="{% url 'cards:card-list' %}">Add new card</button>
             </div>
         </div>
     </div>

@@ -51,12 +51,12 @@
                 </div>
             </div>
             <div class="modal-footer border-0">
-                <button type="button" class="btn btn-danger" _="on htmx:afterRequest closeModal()" hx-confirm="Are you sure?" hx-delete="{% url 'cards:delete-item' item.uuid %}" hx-swap="delete" hx-target="#item-{{ item.uuid }}">Delete</button>
+                <button type="button" class="btn btn-danger" _="on htmx:afterRequest closeModal()" hx-confirm="Are you sure?" hx-delete="{% url 'cards:item' item.uuid %}" hx-swap="delete" hx-target="#item-{{ item.uuid }}">Delete</button>
                 <button type="button" class="btn btn-secondary" hx-trigger="formresponded"
                     _="on click send detailsformsubmit 
                         on htmx:afterRequest from first <form /> in my parentElement.parentElement send formresponded to me 
                         on htmx:afterOnLoad closeModal()" 
-                    hx-swap="none" hx-get="{% url 'cards:card-items' item.card.uuid %}"
+                    hx-swap="none" hx-get="{% url 'cards:items-list' item.card.uuid %}"
                     hx-select-oob="#item-{{ item.uuid }}">Close</button>
             </div>
         </div>

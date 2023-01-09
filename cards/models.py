@@ -25,16 +25,19 @@ class Card(BaseModel):
     def get_items(self):
         return self.items.all().order_by('order')
 
-    def get_max_order(self):
-        if self.items.all().exists():
-            return self.items.aggregate(models.Max('order'))['order__max']
-        else:
-            return 0
+    def __str__(self):
+        return f'{self.title}-({self.order})'
 
     objects = OrderManager()
     order = models.IntegerField(default=1)
     def get_owner_objects(self):
         return Card.objects.filter(user=self.user)
+
+    def get_max_order(self):
+        if self.get_owner_objects().exists():
+            return self.get_owner_objects().aggregate(models.Max('order'))['order__max']
+        else:
+            return 0
 
 
 class Tag(BaseModel):
@@ -51,8 +54,19 @@ class Item(BaseModel):
 
     objects = OrderManager()
     order = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f'{self.title}-({self.order})'
+
     def get_owner_objects(self):
         return self.card.get_items()
+
+    
+    def get_max_order(self):
+        if self.get_owner_objects().exists():
+            return self.get_owner_objects().aggregate(models.Max('order'))['order__max']
+        else:
+            return 0
 
 
 

@@ -2,12 +2,12 @@
     <div class="card-handler d-flex justify-content-between pl-1 pr-0 pb-3 border-0">
         <p class="mb-0"><strong>{{ card.title }}</strong></p>
         <button class="btn btn-ouline-secondary btn-sm"
-            hx-delete="{% url 'cards:delete-card' card.uuid %}" hx-target="#card-{{ card.uuid }}" hx-swap="delete"><span class="material-icons-outlined">
+            hx-delete="{% url 'cards:card' card.uuid %}" hx-target="#card-{{ card.uuid }}" hx-swap="delete"><span class="material-icons-outlined">
                 delete
             </span></button>
     </div>
 
-    <div id="parent-card-{{ card.uuid }}" class="list-items" hx-include="[name='tag-filter-item']" hx-trigger="load, filteritems from:body, tag-deleted from:body" hx-get="{% url 'cards:card-items' card.uuid %}" hx-swap="innerHTML">
+    <div id="parent-card-{{ card.uuid }}" class="list-items" hx-include="[name='tag-filter-item']" hx-trigger="load, filteritems from:body, tag-deleted from:body" hx-get="{% url 'cards:items-list' card.uuid %}" hx-swap="innerHTML">
         
     </div>
 
@@ -20,7 +20,7 @@
                                                                 hx-target="#parent-card-{{ card.uuid }}"
                                                                 hx-select=".item:last-child" 
                                                                 hx-swap="beforeend" 
-                                                                hx-post="{% url 'cards:add-item' card.uuid %}" >Add item</button>
+                                                                hx-post="{% url 'cards:items-list' card.uuid %}" >Add item</button>
             <button class="btn btn-secondary" type="button"
                 _="on click toggle .hidden on #add-item-{{card.uuid}} toggle .hidden on #add-btn-{{ card.uuid }}">X</button>
         </div>
