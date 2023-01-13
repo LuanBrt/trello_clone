@@ -89,6 +89,7 @@ class ItemView(LoginRequiredMixin, views.View):
 
         # we move the object to the last position so that the order of the other items is updated
         Item.objects.move(item, item.get_max_order() + 1)
+        item.delete()
 
         return HttpResponse()
 
