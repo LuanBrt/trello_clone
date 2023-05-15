@@ -4,7 +4,7 @@
 
 Trello clone made with the intent of practising backend skills as well as the creation of [hypermedia-driven apps](https://htmx.org/essays/hypermedia-driven-applications/).
 
-Live Demo: http://luanbrt.pythonanywhere.com/
+Live Demo: http://luanbrt18.pythonanywhere.com/
 
 # Technologies
 
